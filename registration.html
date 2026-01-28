@@ -3,90 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dilaab | Event Registration</title>
+    <title>Dilaab | Registration</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        :root { --primary: #e53935; --primary-hover: #c62828; }
-        body { background-color: #f4f7f6; }
-        main { max-width: 600px; margin-top: 2rem; }
-        .card { padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; }
-        button { background-color: var(--primary); border: none; }
-        button:hover { background-color: var(--primary-hover); }
-        .success-msg { display: none; text-align: center; color: #2e7d32; }
+        :root { --primary: #d32f2f; }
+        main { max-width: 500px; margin: auto; padding-top: 5vh; }
+        .card { padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
     </style>
 </head>
 <body class="container">
-
-    <nav>
-        <ul>
-            <li><strong>DILAAB</strong></li>
-        </ul>
-        <ul>
-            <li><a href="admin.html" class="secondary">Admin Portal</a></li>
-        </ul>
-    </nav>
-
     <main>
-        <div class="card" id="formContainer">
-            <header>
-                <h2 style="margin-bottom: 0.5rem;">Register Now</h2>
-                <p>Please fill out the details below to join the event.</p>
+        <article class="card">
+            <header id="form-header">
+                <h2 style="margin:0;">Dilaab</h2>
+                <p>Register for the event</p>
             </header>
 
-            <form id="regForm">
-                <label for="fullname">
-                    Full Name
-                    <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
-                </label>
+            <form id="registrationForm">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" name="fullname" placeholder="Juan Dela Cruz" required>
 
-                <label for="email">
-                    Email Address
-                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
-                </label>
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="juan@example.com" required>
 
                 <button type="submit" id="submitBtn">Submit Registration</button>
             </form>
 
-            <div id="successMsg" class="success-msg">
-                <h3>✅ Registration Sent!</h3>
-                <p>Thank you for registering. We have received your details.</p>
-                <button class="outline" onclick="location.reload()">Register Another Person</button>
+            <div id="successMessage" class="hidden" style="text-align: center;">
+                <h3 style="color: #2e7d32;">✅ Success!</h3>
+                <p>Your registration has been recorded.</p>
+                <button class="outline" onclick="location.reload()">Register Another</button>
             </div>
-        </div>
+        </article>
     </main>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw8rhxp4mwsh47fYsBa8PVcs6RYd0XRnREVZEBVfbRv3Fc1cu5qGk5XVctU1iFQDG8ZLQ/exec';
-        const form = document.getElementById('regForm');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzec31JSzmvykIxxib90SE2Lx5WkcHr9L9lyQceRFhT/exec';
+        const form = document.getElementById('registrationForm');
         const btn = document.getElementById('submitBtn');
-        const successBox = document.getElementById('successMsg');
-        const formContent = document.querySelector('form');
-        const headerText = document.querySelector('header');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-            
-            // Disable button and show loading state
             btn.disabled = true;
-            btn.innerText = "Processing... Please wait";
+            btn.innerText = "Processing...";
 
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: new FormData(form)
-            })
-            .then(response => {
-                console.log('Success!', response);
-                // Hide form and show success message
-                formContent.style.display = 'none';
-                headerText.style.display = 'none';
-                successBox.style.display = 'block';
-            })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert("Something went wrong. Please try again.");
-                btn.disabled = false;
-                btn.innerText = "Submit Registration";
-            });
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+                .then(response => {
+                    document.getElementById('registrationForm').classList.add('hidden');
+                    document.getElementById('form-header').classList.add('hidden');
+                    document.getElementById('successMessage').classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert('Error! Please check your connection.');
+                    btn.disabled = false;
+                    btn.innerText = "Submit Registration";
+                });
         });
     </script>
 </body>
