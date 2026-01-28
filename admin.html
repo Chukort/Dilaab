@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilaab Admin | View Registrations</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body class="container">
+    <nav>
+        <ul><li><strong>DILAAB ADMIN</strong></li></ul>
+        <ul><li><a href="registration.html">Back to Form</a></li></ul>
+    </nav>
+    <main>
+        <h3>Registered Participants</h3>
+        <table role="grid">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody id="adminTable">
+                </tbody>
+        </table>
+        <button class="secondary" onclick="clearData()">Clear All Data</button>
+    </main>
+
+    <script>
+        function loadData() {
+            const tableBody = document.getElementById('adminTable');
+            const data = JSON.parse(localStorage.getItem('dilaab_users') || '[]');
+            
+            tableBody.innerHTML = data.map(user => `
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.date}</td>
+                </tr>
+            `).join('');
+        }
+
+        function clearData() {
+            if(confirm("Are you sure you want to wipe all records?")) {
+                localStorage.removeItem('dilaab_users');
+                loadData();
+            }
+        }
+
+        // Run on page load
+        loadData();
+    </script>
+</body>
+</html>
