@@ -3,32 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dilaab | Register</title>
+    <title>Dilaab | Event Registration</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root { --primary: #e53935; --primary-hover: #c62828; }
+        body { background-color: #f4f7f6; }
+        main { max-width: 600px; margin-top: 2rem; }
+        .card { padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); background: white; }
+        button { background-color: var(--primary); border: none; }
+        button:hover { background-color: var(--primary-hover); }
+        .success-msg { display: none; text-align: center; color: #2e7d32; }
+    </style>
 </head>
 <body class="container">
+
     <nav>
-        <ul><li><strong>DILAAB</strong></li></ul>
-        <ul><li><a href="admin.html">Admin View</a></li></ul>
+        <ul>
+            <li><strong>DILAAB</strong></li>
+        </ul>
+        <ul>
+            <li><a href="admin.html" class="secondary">Admin Portal</a></li>
+        </ul>
     </nav>
+
     <main>
-        <h3>Event Registration</h3>
-<form id="regForm">
-    <input type="text" name="fullname" placeholder="Full Name" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <button type="submit" id="submitBtn">Register</button>
-</form>
+        <div class="card" id="formContainer">
+            <header>
+                <h2 style="margin-bottom: 0.5rem;">Register Now</h2>
+                <p>Please fill out the details below to join the event.</p>
+            </header>
 
-<script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzxfAc5VbObTZgJEMWi_Vv8aeKTQbrSK3fCZ3cQqD7M4W0F_qxWCX2wtBbNqQsNPHe1nQ/exec'; // Paste your URL here
-    const form = document.getElementById('regForm');
+            <form id="regForm">
+                <label for="fullname">
+                    Full Name
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                </label>
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => alert("Registered successfully in the database!"))
-            .catch(error => console.error('Error!', error.message));
-    });
-</script>
+                <label for="email">
+                    Email Address
+                    <input type="email" id="email" name="email" placeholder="example@email.com" required>
+                </label>
+
+                <button type="submit" id="submitBtn">Submit Registration</button>
+            </form>
+
+            <div id="successMsg" class="success-msg">
+                <h3>✅ Registration Sent!</h3>
+                <p>Thank you for registering. We have received your details.</p>
+                <button class="outline" onclick="location.reload()">Register Another Person</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw8rhxp4mwsh47fYsBa8PVcs6RYd0XRnREVZEBVfbRv3Fc1cu5qGk5XVctU1iFQDG8ZLQ/exec';
+        const form = document.getElementById('regForm');
+        const btn = document.getElementById('submitBtn');
+        const successBox = document.getElementById('successMsg');
+        const formContent = document.querySelector('form');
+        const headerText = document.querySelector('header');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerText = "Processing... Please wait";
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: new FormData(form)
+            })
+            .then(response => {
+                console.log('Success!', response);
+                // Hide form and show success message
+                formContent.style.display = 'none';
+                headerText.style.display = 'none';
+                successBox.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("Something went wrong. Please try again.");
+                btn.disabled = false;
+                btn.innerText = "Submit Registration";
+            });
+        });
+    </script>
 </body>
 </html>
