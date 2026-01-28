@@ -3,43 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dilaab Admin | View Registrations</title>
+    <title>Dilaab Admin | Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        :root { --primary: #e53935; }
+        .loading { font-style: italic; color: #888; }
+        .stats-card { margin-bottom: 2rem; padding: 1rem; border-left: 4px solid var(--primary); background: #f9f9f9; }
+    </style>
 </head>
 <body class="container">
+    
     <nav>
-        <ul><li><strong>DILAAB ADMIN</strong></li></ul>
-        <ul><li><a href="registration.html">Back to Form</a></li></ul>
+        <ul>
+            <li><strong>DILAAB ADMIN</strong></li>
+        </ul>
+        <ul>
+            <li><a href="registration.html" class="secondary">Registration Form</a></li>
+            <li><button onclick="loadData()">Refresh</button></li>
+        </ul>
     </nav>
-<main class="container">
-    <h3>Admin Dashboard - Live Records</h3>
-    <iframe src="https://script.google.com/macros/s/AKfycbzxfAc5VbObTZgJEMWi_Vv8aeKTQbrSK3fCZ3cQqD7M4W0F_qxWCX2wtBbNqQsNPHe1nQ/exec" 
-            style="width: 100%; height: 500px; border: none;"></iframe>
-</main>
+
+    <main>
+        <div class="stats-card">
+            <span>Total Registrations: </span>
+            <strong id="userCount">0</strong>
+        </div>
+
+        <figure>
+            <table role="grid">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email Address</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="adminTable">
+                    <tr>
+                        <td colspan="3" class="loading">Connecting to Google Sheets...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </figure>
+    </main>
 
     <script>
-        function loadData() {
-            const tableBody = document.getElementById('adminTable');
-            const data = JSON.parse(localStorage.getItem('dilaab_users') || '[]');
-            
-            tableBody.innerHTML = data.map(user => `
-                <tr>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                    <td>${user.date}</td>
-                </tr>
-            `).join('');
-        }
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw8rhxp4mwsh47fYsBa8PVcs6RYd0XRnREVZEBVfbRv3Fc1cu5qGk5XVctU1iFQDG8ZLQ/exec';
 
-        function clearData() {
-            if(confirm("Are you sure you want to wipe all records?")) {
-                localStorage.removeItem('dilaab_users');
-                loadData();
+        async function loadData() {
+            const tableBody = document.getElementById('adminTable');
+            const userCount = document.getElementById('userCount');
+            
+            tableBody.innerHTML = '<tr><td colspan="3" class="loading">Fetching latest data...</td></tr>';
+
+            try {
+                // Fetching from your Google Script URL
+                const response = await fetch(scriptURL);
+                const data = await response.json();
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="3">No records found.</td></tr>';
+                    userCount.innerText = '0';
+                    return;
+                }
+
+                // Update Count
+                userCount.innerText = data.length;
+
+                // Build Table Rows
+                tableBody.innerHTML = data.map(user => {
+                    // Check if date is valid
+                    const dateDisplay = user.timestamp ? new Date(user.timestamp).toLocaleString() : 'N/A';
+                    
+                    return `
+                        <tr>
+                            <td>${user.fullname || 'Anonymous'}</td>
+                            <td>${user.email || 'No Email'}</td>
+                            <td><small>${dateDisplay}</small></td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error:', error);
+                tableBody.innerHTML = `<tr><td colspan="3" style="color:red">Failed to load data. Ensure your script is deployed to "Anyone".</td></tr>`;
             }
         }
 
-        // Run on page load
-        loadData();
+        // Initial load
+        window.onload = loadData;
     </script>
 </body>
 </html>
