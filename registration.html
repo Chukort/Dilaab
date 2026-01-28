@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilaab | Register</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body class="container">
+    <nav>
+        <ul><li><strong>DILAAB</strong></li></ul>
+        <ul><li><a href="admin.html">Admin View</a></li></ul>
+    </nav>
+    <main>
+        <h3>Event Registration</h3>
+        <form id="regForm">
+            <label for="firstname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="Juan Dela Cruz" required>
+            
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="email@example.com" required>
+
+            <button type="submit">Register Now</button>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newUser = {
+                name: document.getElementById('fullname').value,
+                email: document.getElementById('email').value,
+                date: new Date().toLocaleString()
+            };
+
+            // Get existing data or empty array
+            const registrations = JSON.parse(localStorage.getItem('dilaab_users') || '[]');
+            registrations.push(newUser);
+            
+            // Save back to local storage
+            localStorage.setItem('dilaab_users', JSON.stringify(registrations));
+
+            alert('Registration Successful!');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
