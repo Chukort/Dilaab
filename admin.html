@@ -11,21 +11,11 @@
         <ul><li><strong>DILAAB ADMIN</strong></li></ul>
         <ul><li><a href="registration.html">Back to Form</a></li></ul>
     </nav>
-    <main>
-        <h3>Registered Participants</h3>
-        <table role="grid">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Registration Date</th>
-                </tr>
-            </thead>
-            <tbody id="adminTable">
-                </tbody>
-        </table>
-        <button class="secondary" onclick="clearData()">Clear All Data</button>
-    </main>
+<main class="container">
+    <h3>Admin Dashboard - Live Records</h3>
+    <iframe src="https://docs.google.com/spreadsheets/d/e/YOUR_SHEET_ID/pubhtml?widget=true&amp;headers=false" 
+            style="width: 100%; height: 500px; border: none;"></iframe>
+</main>
 
     <script>
         function loadData() {
