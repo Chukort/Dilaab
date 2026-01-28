@@ -13,37 +13,22 @@
     </nav>
     <main>
         <h3>Event Registration</h3>
-        <form id="regForm">
-            <label for="firstname">Full Name</label>
-            <input type="text" id="fullname" name="fullname" placeholder="Juan Dela Cruz" required>
-            
-            <label for="email">Email address</label>
-            <input type="email" id="email" name="email" placeholder="email@example.com" required>
+<form id="regForm">
+    <input type="text" name="fullname" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <button type="submit" id="submitBtn">Register</button>
+</form>
 
-            <button type="submit">Register Now</button>
-        </form>
-    </main>
+<script>
+    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // Paste your URL here
+    const form = document.getElementById('regForm');
 
-    <script>
-        document.getElementById('regForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const newUser = {
-                name: document.getElementById('fullname').value,
-                email: document.getElementById('email').value,
-                date: new Date().toLocaleString()
-            };
-
-            // Get existing data or empty array
-            const registrations = JSON.parse(localStorage.getItem('dilaab_users') || '[]');
-            registrations.push(newUser);
-            
-            // Save back to local storage
-            localStorage.setItem('dilaab_users', JSON.stringify(registrations));
-
-            alert('Registration Successful!');
-            this.reset();
-        });
-    </script>
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => alert("Registered successfully in the database!"))
+            .catch(error => console.error('Error!', error.message));
+    });
+</script>
 </body>
 </html>
