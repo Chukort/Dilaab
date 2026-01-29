@@ -5,59 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dilaab | Registration</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <style>
-        :root { --primary: #d32f2f; }
-        main { max-width: 500px; margin: auto; padding-top: 5vh; }
-        .card { padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .hidden { display: none; }
-    </style>
 </head>
 <body class="container">
-    <main>
-        <article class="card">
-            <header id="form-header">
-                <h2 style="margin:0;">Dilaab</h2>
-                <p>Register for the event</p>
+    <main style="max-width: 500px; margin: auto; padding-top: 50px;">
+        <article>
+            <header>
+                <hgroup>
+                    <h1>Dilaab</h1>
+                    <h2>Event Registration</h2>
+                </hgroup>
             </header>
-
-            <form id="registrationForm">
+            
+            <form id="regForm">
                 <label for="fullname">Full Name</label>
                 <input type="text" id="fullname" name="fullname" placeholder="Juan Dela Cruz" required>
-
+                
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="juan@example.com" required>
+                <input type="email" id="email" name="email" placeholder="name@example.com" required>
 
                 <button type="submit" id="submitBtn">Submit Registration</button>
             </form>
-
-            <div id="successMessage" class="hidden" style="text-align: center;">
-                <h3 style="color: #2e7d32;">✅ Success!</h3>
-                <p>Your registration has been recorded.</p>
-                <button class="outline" onclick="location.reload()">Register Another</button>
-            </div>
+            
+            <div id="msg" style="display:none; text-align:center; padding: 10px; border-radius: 5px;"></div>
         </article>
     </main>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzec31JSzmvykIxxib90SE2Lx5WkcHr9L9lyQceRFhT/exec';
-        const form = document.getElementById('registrationForm');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx-SlWJaYlpbex_lAob3kHBJAE4WDAcqxdV8FJo8sb0fKotvT9px2DnvDaGUJ6UGbAWqw/exec';
+        const form = document.getElementById('regForm');
         const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('msg');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
             btn.disabled = true;
-            btn.innerText = "Processing...";
-
+            btn.innerText = "Sending to Database...";
+            
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
                 .then(response => {
-                    document.getElementById('registrationForm').classList.add('hidden');
-                    document.getElementById('form-header').classList.add('hidden');
-                    document.getElementById('successMessage').classList.remove('hidden');
-                })
-                .catch(error => {
-                    alert('Error! Please check your connection.');
                     btn.disabled = false;
                     btn.innerText = "Submit Registration";
+                    msg.style.display = "block";
+                    msg.style.backgroundColor = "#d4edda";
+                    msg.innerText = "Success! You are now registered.";
+                    form.reset();
+                })
+                .catch(error => {
+                    btn.disabled = false;
+                    btn.innerText = "Submit Registration";
+                    msg.style.display = "block";
+                    msg.style.backgroundColor = "#f8d7da";
+                    msg.innerText = "Error: Could not save data.";
+                    console.error('Error!', error.message);
                 });
         });
     </script>
